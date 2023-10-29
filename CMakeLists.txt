@@ -8,5 +8,7 @@ add_compile_options(-Wall -Wextra)
 
 find_package(Eigen3 REQUIRED)
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/src/test.cpp)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src SRC)
+add_executable(${PROJECT_NAME} ${SRC})
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen GL GLU glut)

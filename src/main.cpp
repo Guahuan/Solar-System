@@ -10,11 +10,12 @@ float SCREEN_Y = 1000;
 // revolution control
 float t = 0;
 
-//视角控制
+// View control
 float look_x = 0, look_y = 0, look_z = 0, look_x_temp = 0, look_z_temp = 0;
-float screenrate_x, screenrate_y; //鼠标屏幕坐标相对于中心点移动的比例
+float screenrate_x, screenrate_y; // The proportion of mouse screen coordinates
+                                  // moved relative to the center point
 float r = 10;
-//相机位置
+// Camera position
 float cpos_x = 0, cpos_y = 5, cpos_z = 25;
 
 int centerpoint_x = SCREEN_X / 2, centerpoint_y = SCREEN_Y / 2;
@@ -71,44 +72,63 @@ void reshape(int w, int h) {
   glLoadIdentity();
 }
 
-//不按鼠标移动事件
+// Mouse move event
 void onMouseMovePassive(int screen_x, int screen_y) {
   float offsetx = screen_x - centerpoint_x;
   float offsety = screen_y - centerpoint_y;
-  screenrate_x = offsetx / centerpoint_x * PI;     //用于摄像机水平移动
-  screenrate_y = offsety / centerpoint_y * PI / 2; //用于摄像机上下移动
-  //水平方向
+  screenrate_x =
+      offsetx / centerpoint_x * PI; // Used for camera horizontal movement
+  screenrate_y =
+      offsety / centerpoint_y * PI / 2; // Used for camera up and down movement
+  // Horizontal direction
   look_x_temp = r * sin(screenrate_x);
-  look_z_temp = r * cos(screenrate_x); //最后使用时要和相机坐标相加/减
-  //竖直方向
+  look_z_temp =
+      r *
+      cos(screenrate_x); // Finally, add/subtract with the camera coordinates
+  // Vertical direction
   look_y = r * sin(-screenrate_y);
-  float r_castlenght = abs(r * cos(screenrate_y)); //投影在xz面的长度
-  //根据长度计算真正的look_x,look_z
+  float r_castlenght =
+      abs(r * cos(screenrate_y)); // Length projected on the xz plane
+  // Calculate the true look_x and look_z based on the length
   look_x = r_castlenght * look_x_temp / r;
   look_z = r_castlenght * look_z_temp / r;
 }
 
-float step = 0.1;
 void key(unsigned char key, int x, int y) {
+  const float step = 0.1;
   switch (key) {
   case 'r':
     t += 0.01;
     break;
+  case 'q':
+    exit(0);
   case 'w':
-    cpos_x += look_x_temp * step;
-    cpos_z -= look_z_temp * step;
+    // Horizontal first person perspective
+    // cpos_x += look_x * step;
+    // cpos_z -= look_z * step;
+
+    // Free first person perspective
+    cpos_x += look_x * step;
+    cpos_y += look_y * step;
+    cpos_z -= look_z * step;
     break;
   case 's':
-    cpos_x -= look_x_temp * step;
-    cpos_z += look_z_temp * step;
+    // Horizontal first person perspective
+    // cpos_x -= look_x * step;
+    // cpos_z += look_z * step;
+
+    // Free first person perspective
+    cpos_x -= look_x * step;
+    cpos_y -= look_y * step;
+    cpos_z += look_z * step;
     break;
   case 'a':
-    cpos_x += -look_z_temp * step;
-    cpos_z -= look_x_temp * step;
+    cpos_x += -look_z * step;
+    cpos_z -= look_x * step;
     break;
   case 'd':
-    cpos_x += look_z_temp * step;
-    cpos_z -= -look_x_temp * step;
+    cpos_x += look_z * step;
+    cpos_z -= -look_x * step;
     break;
   default:
     break;
